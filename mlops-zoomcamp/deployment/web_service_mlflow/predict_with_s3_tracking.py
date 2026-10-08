@@ -1,28 +1,19 @@
 # model flask endpoint 
 
+from multiprocessing.pool import RUN
 import pickle
 from flask import Flask, request, jsonify
 import mlflow.sklearn
 from mlflow.tracking import MlflowClient
 import mlflow
 
-# loads model for consumption from mlflow registry
+# loads model for consumption from mlflow registry in s3
 RUN_ID = 'c4070475175040c181ee4a94d713de99'
-TRACKING_URI = 'http://127.0.0.1:5000'
-mlflow.set_tracking_uri(TRACKING_URI)
-
-# NO LONGER NEEDED used pipeline instead | we only need run id now
-# client = MlflowClient(tracking_uri=TRACKING_URI)
-
-# # get dictv | NO LONGER NEEDED used pipeline instead
-# path = client.download_artifacts(run_id=RUN_ID, path='preprocessor/preprocessor.b') 
-# print(f'Downloading the model vectorizer to {path}')
-# with open(path, 'rb') as f_out:
-#     dv = pickle.load(f_out)
+MODEL_ID = 'm-00f0e0c415624084bb7d514d7604a4cc'
 
 # get model
-model_pipeline_uri = f'runs:/{RUN_ID}/model'
-model = mlflow.sklearn.load_model(model_pipeline_uri)
+model_pipeline_uri_from_s3 = f's3://ride-duration-mlflow-bucket/3/models/{MODEL_ID}/artifacts'
+model = mlflow.sklearn.load_model(model_pipeline_uri_from_s3)
 
 # get features | transform features
 def prepare_features(ride):
