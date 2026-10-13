@@ -1,6 +1,5 @@
 # model flask endpoint 
 
-from multiprocessing.pool import RUN
 import pickle
 from flask import Flask, request, jsonify
 import mlflow.sklearn
